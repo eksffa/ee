@@ -38,9 +38,16 @@ else
 	terminfo_exists="-DCAP"
 fi
 
+
+PREFIX="" # reset ${PREFIX}
+
+if [  -x /usr/bin/xcrun ]
+then
+	PREFIX=`xcrun --show-sdk-path`
+fi
 # test for existence of termio header (on SysV systems)
 
-if [ -f /usr/include/termio.h ]
+if [ -f "${PREFIX}/usr/include/termio.h" ]
 then
 	termio="-DSYS5"
 else
@@ -49,7 +56,7 @@ fi
 
 # test for sgtty header (on BSD systems)
 
-if [ -f /usr/include/sgtty.h ]
+if [ -f "${PREFIX}/usr/include/sgtty.h" ]
 then
 	sgtty="TRUE"
 else
@@ -60,22 +67,22 @@ fi
 
 HEADER_FILES=""
 
-if [ -f /usr/include/sys/time.h ]
+if [ -f "${PREFIX}/usr/include/sys/time.h" ]
 then
-	HEADER_FILES="/usr/include/sys/time.h "
+	HEADER_FILES="${PREFIX}/usr/include/sys/time.h"
 fi
 
-if [ -f /usr/include/sys/types.h ]
+if [ -f "${PREFIX}/usr/include/sys/types.h" ]
 then
-	HEADER_FILES="$HEADER_FILES /usr/include/sys/types.h"
+	HEADER_FILES="$HEADER_FILES ${PREFIX}/usr/include/sys/types.h"
 fi
 
 # check for unistd.h
 
-if [ -f /usr/include/unistd.h ]
+if [ -f "${PREFIX}/usr/include/unistd.h" ]
 then
 	HAS_UNISTD=-DHAS_UNISTD
-	HEADER_FILES="$HEADER_FILES /usr/include/unistd.h"
+	HEADER_FILES="$HEADER_FILES ${PREFIX}/usr/include/unistd.h"
 else
 	HAS_UNISTD=""
 fi
@@ -93,7 +100,7 @@ fi
 
 # check for existence of select.h (on AIX)
 
-if [ -f /usr/include/sys/select.h ]
+if [ -f "${PREFIX}/usr/include/sys/select.h" ]
 then
 	select_hdr="-DSLCT_HDR"
 else
@@ -102,7 +109,7 @@ fi
 
 # check for stdlib.h
 
-if [ -f /usr/include/stdlib.h ]
+if [ -f "${PREFIX}/usr/include/stdlib.h" ]
 then
 	HAS_STDLIB=-DHAS_STDLIB
 else
@@ -111,7 +118,7 @@ fi
 
 # check for stdarg.h
 
-if [ -f /usr/include/stdarg.h ]
+if [ -f "${PREFIX}/usr/include/stdarg.h" ]
 then
 	HAS_STDARG=-DHAS_STDARG
 else
@@ -120,7 +127,7 @@ fi
 
 # check for ctype.h
 
-if [ -f /usr/include/ctype.h ]
+if [ -f "${PREFIX}/usr/include/ctype.h" ]
 then
 	HAS_CTYPE=-DHAS_CTYPE
 else
@@ -129,7 +136,7 @@ fi
 
 # check for sys/ioctl.h
 
-if [ -f /usr/include/sys/ioctl.h ]
+if [ -f "${PREFIX}/usr/include/sys/ioctl.h" ]
 then
 	HAS_SYS_IOCTL=-DHAS_SYS_IOCTL
 else
@@ -138,7 +145,7 @@ fi
 
 # check for sys/wait.h
 
-if [ -f /usr/include/sys/wait.h ]
+if [ -f "${PREFIX}/usr/include/sys/wait.h" ]
 then
         HAS_SYS_WAIT=-DHAS_SYS_WAIT
 else
@@ -147,7 +154,7 @@ fi
 
 # check for localization headers
 
-if [ -f /usr/include/locale.h -a -f /usr/include/nl_types.h ]
+if [ -f "${PREFIX}/usr/include/locale.h" -a -f "${PREFIX}/usr/include/nl_types.h" ]
 then
 	catgets=""
 else
