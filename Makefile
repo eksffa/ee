@@ -21,6 +21,7 @@ localmake:
 	@./create.make
 
 install :
+	mkdir -p /usr/local/bin
 	cp ee /usr/local/bin/ee
 	cp ee.1 /usr/share/man/man1/ee.1
 
@@ -31,4 +32,10 @@ localinstall:
 	mkdir -p ~/bin
 	cp -fpv ee ~/bin/
 	echo "emacs" > ~/.init.ee
+
+deinstall:
+	rm /usr/local/bin/ee
+	rm /usr/share/man/man1/ee.1
+	unlink /usr/lib/terminfo
+	[[ -e ~/.init.ee ]] && echo "~/.init.ee exists, remove it manually for safety..."
 
