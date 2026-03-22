@@ -645,8 +645,8 @@ int attributes_set[9];
 static int nc_attributes = 0;	/* global attributes for new_curse to observe */
 
 #ifdef SYS5
-struct termio Terminal;
-struct termio Saved_tty;
+struct termios Terminal;
+struct termios Saved_tty;
 #else
 struct sgttyb Terminal;
 struct sgttyb Saved_tty;
@@ -800,7 +800,7 @@ printf("starting initscr \n");fflush(stdout);
 	Move_It = FALSE;
 	Noblock = FALSE;
 #ifdef SYS5
-	value = ioctl(0, TCGETA, &Terminal);
+	value = ioctl(0, TCGETS, &Terminal);
 	if (Terminal.c_cflag & PARENB)
 	{
 		if (Terminal.c_cflag & PARENB)
@@ -2338,7 +2338,7 @@ int first_char;				/* first character of sequence	*/
 	char *Gtemp;
 	int Found;
 #ifdef SYS5
-	struct termio Gterminal;
+	struct termios Gterminal;
 #else
 	struct sgttyb Gterminal;
 #endif
@@ -2390,7 +2390,7 @@ fflush(stderr);
 		value = alarm(0);
 #endif /* BSD_SELECT */
 #ifdef SYS5
-/*	value = ioctl(0, TCSETA, &Terminal);*/
+/*	value = ioctl(0, TCSETS, &Terminal);*/
 #else
 	value = ioctl(0, TIOCSETP, &Terminal);
 /*	value = fcntl(0, F_SETFL, old_arg);*/
@@ -2661,7 +2661,7 @@ echo()			/* turn on echoing				*/
 
 #ifdef SYS5
 	Terminal.c_lflag |= ECHO;		/* enable echo		*/
-	value = ioctl(0, TCSETA, &Terminal);	/* set characteristics	*/
+	value = ioctl(0, TCSETS, &Terminal);	/* set characteristics	*/
 #else
 	Terminal.sg_flags |= ECHO;		/* enable echo		*/
 	value = ioctl(0, TIOCSETP, &Terminal);	/* set characteristics	*/
@@ -2675,7 +2675,7 @@ noecho()		/* turn off echoing				*/
 
 #ifdef SYS5
 	Terminal.c_lflag &= ~ECHO;		/* disable echo		*/
-	value = ioctl(0, TCSETA, &Terminal);	/* set characteristics	*/
+	value = ioctl(0, TCSETS, &Terminal);	/* set characteristics	*/
 #else
 	Terminal.sg_flags &= ~ECHO;		/* disable echo		*/
 	value = ioctl(0, TIOCSETP, &Terminal);	/* set characteristics	*/
@@ -2703,7 +2703,7 @@ raw()			/* set to read characters immediately		*/
 	Terminal.c_cc[VMIN] = 1;		/* minimum of one character */
 	Terminal.c_cc[VTIME] = 0;		/* timeout value	*/
 	Terminal.c_cc[VINTR] = 0;		/* eliminate interrupt	*/
-	value = ioctl(0, TCSETA, &Terminal);	/* set characteristics	*/
+	value = ioctl(0, TCSETS, &Terminal);	/* set characteristics	*/
 #else
 	Terminal.sg_flags |= RAW;	/* enable raw mode		*/
 	value = ioctl(0, TIOCSETP, &Terminal);	/* set characteristics	*/
@@ -2721,7 +2721,7 @@ noraw()			/* set to normal character read mode		*/
 	Terminal.c_cc[VEOF] = 4;		/* EOF character = 4	*/
 	Terminal.c_cc[VEOL] = '\0';	/* EOL = 0		*/
 	Terminal.c_cc[VINTR] = Intr;		/* reset interrupt char	*/
-	value = ioctl(0, TCSETA, &Terminal);	/* set characteristics	*/
+	value = ioctl(0, TCSETS, &Terminal);	/* set characteristics	*/
 #else
 	Terminal.sg_flags &= ~RAW;	/* disable raw mode		*/
 	value = ioctl(0, TIOCSETP, &Terminal);	/* set characteristics	*/
@@ -2737,7 +2737,7 @@ nl()
 
 #ifdef SYS5
 	Terminal.c_iflag |= ICRNL;	/* enable carriage-return to line-feed mapping	*/
-	value = ioctl(0, TCSETA, &Terminal);	/* set characteristics	*/
+	value = ioctl(0, TCSETS, &Terminal);	/* set characteristics	*/
 #endif
 }
 
@@ -2749,7 +2749,7 @@ nonl()
 #ifdef SYS5
 	Terminal.c_iflag &= ~ICRNL;	/* disable carriage-return to line-feed mapping	*/
 	Terminal.c_iflag &= ~IGNCR;	/* do not ignore carriage-return	*/
-	value = ioctl(0, TCSETA, &Terminal);	/* set characteristics	*/
+	value = ioctl(0, TCSETS, &Terminal);	/* set characteristics	*/
 #endif
 }
 
@@ -2799,7 +2799,7 @@ savetty()		/* save current tty stats			*/
 	int value;
 
 #ifdef SYS5
-	value = ioctl(0, TCGETA, &Saved_tty);	/* set characteristics	*/
+	value = ioctl(0, TCGETS, &Saved_tty);	/* set characteristics	*/
 #else
 	value = ioctl(0, TIOCGETP, &Saved_tty);	/* set characteristics	*/
 #endif
@@ -2811,7 +2811,7 @@ resetty()		/* restore previous tty stats			*/
 	int value;
 
 #ifdef SYS5
-	value = ioctl(0, TCSETA, &Saved_tty);	/* set characteristics	*/
+	value = ioctl(0, TCSETS, &Saved_tty);	/* set characteristics	*/
 #else
 	value = ioctl(0, TIOCSETP, &Saved_tty);	/* set characteristics	*/
 #endif
@@ -3824,4 +3824,3 @@ int flag;
 {
 	nc_attributes &= ~flag;
 }
-

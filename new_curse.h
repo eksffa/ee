@@ -42,7 +42,8 @@
 #include <stdio.h>
 
 #ifdef SYS5
-#include <termio.h>
+#include <sys/ioctl.h>
+#include <termios.h>
 #else
 #include <sgtty.h>
 #include <fcntl.h>
@@ -257,4 +258,3 @@ extern void Char_out P_((int newc, int newatt, char *line, char *attrib, int off
 extern void nc_setattrib P_((int));
 extern void nc_clearattrib P_((int));
 #undef P_
-
